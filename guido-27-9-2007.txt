@@ -1,0 +1,121 @@
+(*
+Problema:
+Inspirándose en el map para listas 
+
+map = fn : ('a -> 'b) -> 'a list -> 'b list
+
+Hacer un mapT para arboles binarios 
+Nota: una lista se puede definir como  
+
+datatype 'a list = [] | :: of 'a * 'a list
+
+Un arbol binario puede definirse como 
+
+datatype a' Tree = V | N of 'a * 'a Tree * 'a Tree
+
+Ej:
+
+[1,2,3] = 1::2::3::[]
+
+El tipo de mapT seria:
+
+mapT = fn : ( 'a -> 'b ) -> 'a Tree -> 'b Tree
+
+---
+
+map ( fn x => 2 * n ) ( N ( 2 , N(1, V, V) , N( 3 , V , V) ) -> ( N( 4, N( 2, V, V) , N( 6 , V, V) )
+
+
+Problema 2:
+
+Lo mismo, para foldr.
+Para listas, 	foldr = fn : ( 'a * 'b -> 'b ) -> 'b -> 'a list -> 'b
+Para arboles, 	foldrT = fn : ( 'a * 'b -> 'b ) -> 'b -> 'a Tree -> 'b
+
+foldrT op+ o (N(2 , N( 1 , V , V) , N( 3 , V , V) ) -> 6
+
+(* Nota: No es imposible. *)
+
+
+RESPUESTA EJERCICIO 1°
+
+(* :: tambien se interpreta como constuctor *)
+
+datatype 'a list = [] | :: of 'a * 'list
+map _ [] = []
+| map f (h::s) = f(h)::(map f s)
+*)
+
+datatype 'a Tree = V | N of 'a * 'a Tree * 'a Tree
+
+mapT _ V = V
+| mapT f (N(n, i, d)) = N( f(n) , mapT f i , mapT f d)
+
+(*
+fun foldrT f i V = i
+| foldrT f i N( x, izq, der) = f( x , foldrT izq , foldrT der ); 
+*)
+
+
+.
+.
+.
+
+Solucion:
+
+datatype 'a Tree = V | N of 'a * 'a Tree 'a Tree
+
+fun mapT _ V = V
+| mapT f ( N( n , i , d) ) = 
+N ( f n , mapT f i , mapT f d );
+
+fun foldT _ n V = n
+| foldT f n ( N( n , i , d ) ) = f( foldT f n i , f( n , foldT f n d ));
+
+
+Como usarlo:
+
+val harvol = N( 2 , N( 1, V, V) , N(3 , V, V) )
+infix ls
+
+fun x ls f = fn y => f(x,y)
+
+mapT ( 2 ls op* ) harvol;
+
+foldT op+ o harvol;
+
+---------------------
+
+Ejercicio 3:
+
+Hacer una funcion  trans(puesta) con el siguiente tipo:
+
+trans = fn : 'a list list -> 'a list list
+
+Debe transponer la matriz:
+
+trans [ [1, 2 , 3] , [ 4, 5, 6] ] -> [ [1,4] , [ 2,5] , [3,6] ]
+
+Nota: se sugiere usar 
+
+map hd
+
+map tl
+
+NOTA 2: 
+
+map hd [ [1,2,3] , [4,5,6] ] -> [1,4]
+map tl [ [1,2,3] , [4,5,6] ] -> [ [2,3] , [5,6] ]
+
+ RESPUESTA EJERCICIO 3:
+
+(* 
+fun trans [] = []
+| trans h::t = map hd h :: map hd ( map tl t );
+*)
+
+Solucion al 3 de Guido:
+
+fun trans ( []::_) = []
+| trans m = (map hd m)::(trans ( map tl m));
+
